@@ -1,0 +1,31 @@
+version: '3'
+services:
+  web:
+    image: quarkus/quarkus-native
+    
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    networks:
+      - quarkus-net
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_DATABASE=test_db_q
+
+
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: root
+    ports:
+      - 3306:3306
+    networks:
+      - quarkus-net
+    volumes:
+      - ../resources/import.sql:/docker-entrypoint-initdb.d/import.sql # thoug i tried this, but it is not working
+networks:
+  quarkus-net:
+    driver: bridge
